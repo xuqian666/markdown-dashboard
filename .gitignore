@@ -2,39 +2,41 @@
 # Dependencies
 node_modules/
 
-# Build artifacts
+# Compiled JavaScript
+*.js.map
+*.min.js
+*.bundle.js
+
+# Build outputs
 dist/
 build/
-target/
-
-# Package manager
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+coverage/
 
 # Environment variables
 .env
 .env.local
-.env.*
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
-.DS_Store
-Thumbs.db
+*.env.*
 
 # Logs
 *.log
 
-# Coverage
-coverage/
-htmlcov/
-.coverage
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
 
-# TypeScript
-*.tsbuildinfo
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python related (if any Python in project)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
 ```
