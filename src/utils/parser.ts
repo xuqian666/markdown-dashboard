@@ -1,4 +1,4 @@
-import { DashboardData, ParsedDashboard } from '../types/dashboard';
+import { DashboardData, ParsedDashboard, MetricCard, ProgressData, StatusIndicator } from '../types/dashboard';
 
 /**
  * 从 Markdown 自定义语法解析数据看板
@@ -140,12 +140,11 @@ export function parseDashboardMarkdown(markdown: string): ParsedDashboard | null
       });
     }
   }
-  
   // 解析进度条
   const progressSection = content.match(/## progress\n([\s\S]*?)(?=## |$)/);
   if (progressSection && progressSection[1]) {
     const progressLines = progressSection[1].trim().split('\n').filter(line => line.trim());
-    const progresses = progressLines.map((line, index) => {
+    const progresses: (ProgressData | null)[] = progressLines.map((line, index) => {
       try {
         const data = JSON.parse(line);
         return {
@@ -159,18 +158,19 @@ export function parseDashboardMarkdown(markdown: string): ParsedDashboard | null
         console.warn('Failed to parse progress:', line);
         return null;
       }
-    }).filter(Boolean);
-    
-    if (progresses.length > 0) {
-      blocks.push({ type: 'progress', data: progresses });
+    });
+
+    const validProgresses = progresses.filter((p): p is ProgressData => p !== null);
+
+    if (validProgresses.length > 0) {
+      blocks.push({ type: 'progress', data: validProgresses });
     }
   }
-  
   // 解析状态指示器
   const statusSection = content.match(/## status\n([\s\S]*?)(?=## |$)/);
   if (statusSection && statusSection[1]) {
     const statusLines = statusSection[1].trim().split('\n').filter(line => line.trim());
-    const statuses = statusLines.map((line, index) => {
+    const statuses: (StatusIndicator | null)[] = statusLines.map((line, index) => {
       try {
         const data = JSON.parse(line);
         return {
@@ -183,10 +183,12 @@ export function parseDashboardMarkdown(markdown: string): ParsedDashboard | null
         console.warn('Failed to parse status:', line);
         return null;
       }
-    }).filter(Boolean);
-    
-    if (statuses.length > 0) {
-      blocks.push({ type: 'status', data: statuses });
+    });
+
+    const validStatuses = statuses.filter((s): s is StatusIndicator => s !== null);
+
+    if (validStatuses.length > 0) {
+      blocks.push({ type: 'status', data: validStatuses });
     }
   }
   
